@@ -1,0 +1,660 @@
+/**
+ * 文件轻工具 - 多语言翻译系统
+ * 语言：zh-CN / en / ja / ko / es
+ */
+(function() {
+  const STORAGE_KEY = 'file-tools-lang';
+  const DEFAULT_LANG = 'zh-CN';
+
+  const t = {
+    'zh-CN': {
+      // 通用导航
+      'brand': '文件轻工具',
+      'nav-home': '首页',
+      'nav-tools': '全部工具',
+      'nav-compress': '图片压缩',
+      'nav-start': '开始使用',
+      'nav-faq': '常见问题',
+      'nav-sizes': '常用尺寸',
+
+      // 页脚
+      'footer': '文件轻工具 · 免费在线工具 · 结果仅供参考',
+
+      // 更多工具区
+      'more-tools': '更多在线文件工具',
+      'more-tools-desc': '免费在线处理图片和文件，无需安装任何软件。',
+      'card-compress': '图片压缩',
+      'card-compress-desc': '压缩 JPG/PNG/WEBP 到指定 KB。',
+      'card-pdf': '图片转 PDF',
+      'card-pdf-desc': '上传图片一键生成 PDF。',
+      'card-format': '图片格式转换',
+      'card-format-desc': 'JPG/PNG/WEBP 互转。',
+      'card-batch': '批量压缩',
+      'card-batch-desc': '多张图片统一压缩。',
+
+      // 首页 - 图片压缩
+      'index-hero-title': '免费在线图片压缩工具',
+      'index-hero-desc': '上传图片，输入目标大小（KB），浏览器本地完成压缩。支持 JPG、PNG、WEBP 格式，图片不会离开你的电脑，安全又快捷。适合证件照、考试报名、头像上传、电商图片等场景。',
+      'dropzone-label': '选择图片',
+      'dropzone-hint': '支持 JPG、PNG、WEBP。图片只在你的浏览器里处理。',
+      'label-target': '目标大小（KB）',
+      'label-width': '最大宽度（px）',
+      'label-format': '输出格式',
+      'select-jpg': 'JPG',
+      'select-webp': 'WEBP',
+      'select-png': 'PNG（无损）',
+      'button-compress': '开始压缩',
+      'status-select': '请先选择一张图片。',
+
+      // 首页 FAQ
+      'index-faq-q1': '图片会上传到服务器吗？',
+      'index-faq-a1': '不会。所有处理都在你的浏览器本地完成，图片不会离开你的电脑，完全保护隐私。',
+      'index-faq-q2': '为什么压不到目标大小？',
+      'index-faq-a2': '图片尺寸过大时单靠降低质量不一定够用。可以降低「最大宽度」再试试，或者换用 WEBP 格式。',
+      'index-faq-q3': '支持哪些图片格式？',
+      'index-faq-a3': '支持 JPG、PNG、WEBP 三种格式作为输入，输出可选 JPG、WEBP 或 PNG。',
+      'index-faq-q4': '压缩后会损失画质吗？',
+      'index-faq-a4': '会有一点，但工具会自动平衡画质和体积。如果对画质要求高，建议选择 PNG 无损输出。',
+      'index-faq-q5': '为什么推荐用在线工具？',
+      'index-faq-a5': '不需要安装任何软件，打开浏览器就能用，方便快捷。',
+
+      // 常用尺寸区
+      'sizes-title': '常用压缩入口',
+      'sizes-desc': '直接选择目标大小，快速进入对应工具页。',
+      'size-100': '图片压缩到 100KB',
+      'size-100-desc': '适合头像、报名照、小尺寸附件。',
+      'size-200': '图片压缩到 200KB',
+      'size-200-desc': '适合证件照、资料上传和网页图片。',
+      'size-500': '图片压缩到 500KB',
+      'size-500-desc': '适合保留清晰度的照片上传。',
+
+      // 图片转PDF
+      'pdf-hero-title': '图片转 PDF',
+      'pdf-hero-desc': '上传 JPG、PNG、WEBP 图片，一键生成 PDF。支持多张图片合并到同一个 PDF，可自定义纸张大小、横竖版和边距。全部在浏览器本地处理，图片不上传服务器。',
+      'pdf-dropzone-label': '选择图片（可多选）',
+      'pdf-dropzone-hint': '支持 JPG、PNG、WEBP，可一次性选择多张图片。',
+      'pdf-label-size': '纸张大小',
+      'pdf-label-orient': '纸张方向',
+      'pdf-label-margin': '边距（mm）',
+      'pdf-opt-a4': 'A4（210×297mm）',
+      'pdf-opt-letter': 'Letter（216×279mm）',
+      'pdf-opt-a3': 'A3（297×420mm）',
+      'pdf-opt-portrait': '竖版',
+      'pdf-opt-landscape': '横版',
+      'pdf-button': '生成 PDF',
+      'pdf-no-image': '请先选择至少一张图片。',
+      'pdf-status-loading': '已选择 {n} 张图片，正在加载...',
+      'pdf-status-ready': '已就绪，共 {n} 张图片。',
+      'pdf-status-generating': '正在生成 PDF...',
+      'pdf-status-done': 'PDF 生成完成！',
+
+      // 图片格式转换
+      'format-hero-title': '图片格式转换',
+      'format-hero-desc': '在线将图片转换为 JPG、PNG、WEBP 格式。支持自定义输出质量和最大尺寸。适合需要统一图片格式、缩小体积或适配不同平台要求的场景。',
+      'format-dropzone-label': '选择图片',
+      'format-dropzone-hint': '支持 JPG、PNG、WEBP 格式。',
+      'format-label-output': '输出格式',
+      'format-label-width': '最大宽度（px）',
+      'format-label-height': '最大高度（px）',
+      'format-label-quality': '输出质量',
+      'format-opt-jpg': 'JPG（通用）',
+      'format-opt-png': 'PNG（无损）',
+      'format-opt-webp': 'WEBP（体积小）',
+      'format-button': '开始转换',
+      'format-no-image': '请先选择一张图片。',
+      'format-status-converting': '正在转换...',
+      'format-status-done': '转换完成！',
+
+      // 批量压缩
+      'batch-hero-title': '批量图片压缩',
+      'batch-hero-desc': '一次上传多张图片，统一压缩到目标大小。支持 JPG、PNG、WEBP 格式，全部在浏览器本地处理。适合多张证件照、商品图片、相册照片等批量处理场景。',
+      'batch-dropzone-label': '选择多张图片',
+      'batch-dropzone-hint': '支持 JPG、PNG、WEBP，按住 Ctrl 或 Cmd 多选。',
+      'batch-label-target': '目标大小（KB）',
+      'batch-label-width': '最大宽度（px）',
+      'batch-label-format': '输出格式',
+      'batch-button': '开始批量压缩',
+      'batch-no-image': '请先选择至少一张图片。',
+      'batch-selected': '已选择 {n} 张图片',
+      'batch-status-progress': '正在压缩（{i}/{total}）：{name}',
+      'batch-status-done': '批量压缩完成！共 {n} 张。',
+      'batch-download': '下载',
+      'batch-saved': '节省',
+
+      // 压缩到指定大小(子页面)
+      'ct-hero-title-100': '图片压缩到100KB',
+      'ct-hero-title-200': '图片压缩到200KB',
+      'ct-hero-title-500': '图片压缩到500KB',
+      'ct-hero-desc-100': '上传 JPG、PNG 或 WEBP 图片，自动压缩到 100KB 左右。适合头像、报名照和小尺寸附件。',
+      'ct-hero-desc-200': '上传 JPG、PNG 或 WEBP 图片，自动压缩到 200KB 左右。适合证件照、资料上传和网页图片。',
+      'ct-hero-desc-500': '上传 JPG、PNG 或 WEBP 图片，自动压缩到 500KB 左右。适合保留清晰度的照片上传。',
+      'ct-faq-title': '常见问题',
+      'ct-faq-100': '适合头像、报名照片、小尺寸证件照和表单附件。如果照片很大，可以把最大宽度调低。',
+      'ct-faq-200': '适合证件照、资料上传和网页图片。200KB 是很多系统的常见限制。',
+      'ct-faq-500': '适合需要在清晰度和体积之间取得平衡的照片。500KB 能保留较好的画质。',
+    },
+
+    'en': {
+      'brand': 'File Light Tools',
+      'nav-home': 'Home',
+      'nav-tools': 'All Tools',
+      'nav-compress': 'Compress',
+      'nav-start': 'Get Started',
+      'nav-faq': 'FAQ',
+      'nav-sizes': 'Quick Sizes',
+
+      'footer': 'File Light Tools · Free Online Tools · Results for reference only',
+
+      'more-tools': 'More Online Tools',
+      'more-tools-desc': 'Free online image & file tools. No installation needed.',
+      'card-compress': 'Image Compressor',
+      'card-compress-desc': 'Compress JPG/PNG/WEBP to target KB.',
+      'card-pdf': 'Image to PDF',
+      'card-pdf-desc': 'Convert images to PDF with one click.',
+      'card-format': 'Format Converter',
+      'card-format-desc': 'Convert between JPG/PNG/WEBP.',
+      'card-batch': 'Batch Compress',
+      'card-batch-desc': 'Compress multiple images at once.',
+
+      'index-hero-title': 'Free Online Image Compressor',
+      'index-hero-desc': 'Upload an image, set target size (KB), compress locally in your browser. Supports JPG, PNG, WEBP. Your images never leave your computer. Perfect for ID photos, avatars, e-commerce images, and more.',
+      'dropzone-label': 'Choose Image',
+      'dropzone-hint': 'Supports JPG, PNG, WEBP. All processing is done locally in your browser.',
+      'label-target': 'Target Size (KB)',
+      'label-width': 'Max Width (px)',
+      'label-format': 'Output Format',
+      'select-jpg': 'JPG',
+      'select-webp': 'WEBP',
+      'select-png': 'PNG (Lossless)',
+      'button-compress': 'Compress',
+      'status-select': 'Please select an image first.',
+
+      'index-faq-q1': 'Are images uploaded to a server?',
+      'index-faq-a1': 'No. All processing happens locally in your browser. Your images never leave your computer.',
+      'index-faq-q2': "Why can't it reach the target size?",
+      'index-faq-a2': 'If the image is too large, try reducing the max width or switching to WEBP format for better compression.',
+      'index-faq-q3': 'What formats are supported?',
+      'index-faq-a3': 'Input supports JPG, PNG, WEBP. Output can be JPG, WEBP, or PNG.',
+      'index-faq-q4': 'Does compression reduce quality?',
+      'index-faq-a4': 'Slightly, but the tool balances quality and file size automatically. For best quality, use PNG output.',
+      'index-faq-q5': 'Why use an online tool?',
+      'index-faq-a5': 'No software installation needed. Just open your browser and use it. Quick and convenient.',
+
+      'sizes-title': 'Quick Compress Sizes',
+      'sizes-desc': 'Select a target size to go directly to that tool page.',
+      'size-100': 'Compress to 100KB',
+      'size-100-desc': 'For avatars, application photos.',
+      'size-200': 'Compress to 200KB',
+      'size-200-desc': 'For ID photos, document uploads.',
+      'size-500': 'Compress to 500KB',
+      'size-500-desc': 'For high-quality photo uploads.',
+
+      'pdf-hero-title': 'Image to PDF',
+      'pdf-hero-desc': 'Upload JPG, PNG, WEBP images and generate PDFs with one click. Supports merging multiple images into a single PDF. Customize page size, orientation, and margins.',
+      'pdf-dropzone-label': 'Choose Images (Multi-select)',
+      'pdf-dropzone-hint': 'Supports JPG, PNG, WEBP. Hold Ctrl/Cmd to select multiple.',
+      'pdf-label-size': 'Page Size',
+      'pdf-label-orient': 'Orientation',
+      'pdf-label-margin': 'Margin (mm)',
+      'pdf-opt-a4': 'A4 (210×297mm)',
+      'pdf-opt-letter': 'Letter (216×279mm)',
+      'pdf-opt-a3': 'A3 (297×420mm)',
+      'pdf-opt-portrait': 'Portrait',
+      'pdf-opt-landscape': 'Landscape',
+      'pdf-button': 'Generate PDF',
+      'pdf-no-image': 'Please select at least one image.',
+      'pdf-status-loading': 'Selected {n} images, loading...',
+      'pdf-status-ready': 'Ready. {n} images loaded.',
+      'pdf-status-generating': 'Generating PDF...',
+      'pdf-status-done': 'PDF generated successfully!',
+
+      'format-hero-title': 'Image Format Converter',
+      'format-hero-desc': 'Convert images between JPG, PNG, WEBP formats. Customize output quality and max dimensions. Perfect for unifying formats or reducing file size.',
+      'format-dropzone-label': 'Choose Image',
+      'format-dropzone-hint': 'Supports JPG, PNG, WEBP.',
+      'format-label-output': 'Output Format',
+      'format-label-width': 'Max Width (px)',
+      'format-label-height': 'Max Height (px)',
+      'format-label-quality': 'Output Quality',
+      'format-opt-jpg': 'JPG',
+      'format-opt-png': 'PNG (Lossless)',
+      'format-opt-webp': 'WEBP (Smaller)',
+      'format-button': 'Convert',
+      'format-no-image': 'Please select an image first.',
+      'format-status-converting': 'Converting...',
+      'format-status-done': 'Conversion complete!',
+
+      'batch-hero-title': 'Batch Image Compress',
+      'batch-hero-desc': 'Upload multiple images and compress them all at once. Supports JPG, PNG, WEBP. All processing is done locally in your browser.',
+      'batch-dropzone-label': 'Choose Multiple Images',
+      'batch-dropzone-hint': 'Supports JPG, PNG, WEBP. Hold Ctrl/Cmd to multi-select.',
+      'batch-label-target': 'Target Size (KB)',
+      'batch-label-width': 'Max Width (px)',
+      'batch-label-format': 'Output Format',
+      'batch-button': 'Compress All',
+      'batch-no-image': 'Please select at least one image.',
+      'batch-selected': 'Selected {n} images',
+      'batch-status-progress': 'Compressing ({i}/{total}): {name}',
+      'batch-status-done': 'Batch compress complete! {n} images done.',
+      'batch-download': 'Download',
+      'batch-saved': 'Saved',
+
+      'ct-hero-title-100': 'Compress to 100KB',
+      'ct-hero-title-200': 'Compress to 200KB',
+      'ct-hero-title-500': 'Compress to 500KB',
+      'ct-hero-desc-100': 'Upload JPG, PNG or WEBP images and auto-compress to around 100KB.',
+      'ct-hero-desc-200': 'Upload JPG, PNG or WEBP images and auto-compress to around 200KB.',
+      'ct-hero-desc-500': 'Upload JPG, PNG or WEBP images and auto-compress to around 500KB.',
+      'ct-faq-title': 'FAQ',
+      'ct-faq-100': 'Best for avatars, application photos. If the image is large, try reducing the max width.',
+      'ct-faq-200': 'Best for ID photos and document uploads. 200KB is a common file size limit.',
+      'ct-faq-500': 'Best for photos needing a balance between quality and file size.',
+    },
+
+    'ja': {
+      'brand': 'ファイル軽ツール',
+      'nav-home': 'ホーム',
+      'nav-tools': 'すべてのツール',
+      'nav-compress': '圧縮',
+      'nav-start': 'はじめる',
+      'nav-faq': 'よくある質問',
+      'nav-sizes': 'クイックサイズ',
+
+      'footer': 'ファイル軽ツール · 無料オンラインツール · 参考結果',
+
+      'more-tools': 'その他のツール',
+      'more-tools-desc': '画像・ファイルを無料でオンライン処理。インストール不要。',
+      'card-compress': '画像圧縮',
+      'card-compress-desc': 'JPG/PNG/WEBP を指定サイズに圧縮。',
+      'card-pdf': '画像→PDF',
+      'card-pdf-desc': '画像をワンクリックでPDFに変換。',
+      'card-format': '形式変換',
+      'card-format-desc': 'JPG/PNG/WEBP を相互変換。',
+      'card-batch': '一括圧縮',
+      'card-batch-desc': '複数の画像を一括圧縮。',
+
+      'index-hero-title': '無料オンライン画像圧縮ツール',
+      'index-hero-desc': '画像をアップロードして目標サイズ（KB）を設定するだけで、ブラウザ内で圧縮完了。JPG・PNG・WEBP対応。画像はあなたのPCから外部に送信されません。',
+      'dropzone-label': '画像を選択',
+      'dropzone-hint': 'JPG・PNG・WEBP対応。ブラウザ内で処理されます。',
+      'label-target': '目標サイズ（KB）',
+      'label-width': '最大幅（px）',
+      'label-format': '出力形式',
+      'select-jpg': 'JPG',
+      'select-webp': 'WEBP',
+      'select-png': 'PNG（可逆圧縮）',
+      'button-compress': '圧縮開始',
+      'status-select': '画像を選択してください。',
+
+      'index-faq-q1': '画像はサーバーに送信されますか？',
+      'index-faq-a1': 'いいえ。すべてブラウザ内で処理されるため、画像が外部に送信されることはありません。',
+      'index-faq-q2': '目標サイズまで圧縮できないのはなぜ？',
+      'index-faq-a2': '画像が大きすぎる場合、最大幅を小さくするか、WEBP形式を試してみてください。',
+      'index-faq-q3': '対応形式は？',
+      'index-faq-a3': '入力はJPG・PNG・WEBPに対応。出力はJPG・WEBP・PNGから選択できます。',
+      'index-faq-q4': '画質は落ちますか？',
+      'index-faq-a4': '多少落ちますが、ツールが画質とサイズのバランスを自動調整します。画質重視ならPNG出力をおすすめします。',
+      'index-faq-q5': 'オンラインツールを使う理由は？',
+      'index-faq-a5': 'ソフトウェアのインストールが不要で、ブラウザを開くだけで使えます。',
+
+      'sizes-title': 'クイック圧縮サイズ',
+      'sizes-desc': '目標サイズを選んで直接ツールページへ。',
+      'size-100': '100KBに圧縮',
+      'size-100-desc': 'アバター・申請写真に。',
+      'size-200': '200KBに圧縮',
+      'size-200-desc': '証明写真・書類アップロードに。',
+      'size-500': '500KBに圧縮',
+      'size-500-desc': '高画質な写真アップロードに。',
+
+      'pdf-hero-title': '画像→PDF変換',
+      'pdf-hero-desc': 'JPG・PNG・WEBP画像をアップロードしてPDFを生成。複数の画像を1つのPDFに結合可能。用紙サイズ・方向・余白をカスタマイズ。',
+      'pdf-dropzone-label': '画像を選択（複数可）',
+      'pdf-dropzone-hint': 'JPG・PNG・WEBP対応。Ctrl/Cmdキーで複数選択。',
+      'pdf-label-size': '用紙サイズ',
+      'pdf-label-orient': '方向',
+      'pdf-label-margin': '余白（mm）',
+      'pdf-opt-a4': 'A4（210×297mm）',
+      'pdf-opt-letter': 'レター（216×279mm）',
+      'pdf-opt-a3': 'A3（297×420mm）',
+      'pdf-opt-portrait': '縦向き',
+      'pdf-opt-landscape': '横向き',
+      'pdf-button': 'PDF生成',
+      'pdf-no-image': '少なくとも1枚の画像を選択してください。',
+      'pdf-status-loading': '{n}枚の画像を選択中、読み込み中...',
+      'pdf-status-ready': '準備完了。{n}枚の画像を読み込みました。',
+      'pdf-status-generating': 'PDFを生成中...',
+      'pdf-status-done': 'PDFの生成が完了しました！',
+
+      'format-hero-title': '画像形式変換',
+      'format-hero-desc': '画像をJPG・PNG・WEBP形式に変換。出力品質と最大サイズをカスタマイズ可能。',
+      'format-dropzone-label': '画像を選択',
+      'format-dropzone-hint': 'JPG・PNG・WEBP対応。',
+      'format-label-output': '出力形式',
+      'format-label-width': '最大幅（px）',
+      'format-label-height': '最大高さ（px）',
+      'format-label-quality': '出力品質',
+      'format-opt-jpg': 'JPG',
+      'format-opt-png': 'PNG（可逆圧縮）',
+      'format-opt-webp': 'WEBP（軽量）',
+      'format-button': '変換開始',
+      'format-no-image': '画像を選択してください。',
+      'format-status-converting': '変換中...',
+      'format-status-done': '変換完了！',
+
+      'batch-hero-title': '一括画像圧縮',
+      'batch-hero-desc': '複数の画像を一度にアップロードし、一括で圧縮。JPG・PNG・WEBP対応。すべてブラウザ内で処理。',
+      'batch-dropzone-label': '複数の画像を選択',
+      'batch-dropzone-hint': 'JPG・PNG・WEBP対応。Ctrl/Cmdで複数選択。',
+      'batch-label-target': '目標サイズ（KB）',
+      'batch-label-width': '最大幅（px）',
+      'batch-label-format': '出力形式',
+      'batch-button': '一括圧縮開始',
+      'batch-no-image': '少なくとも1枚の画像を選択してください。',
+      'batch-selected': '{n}枚の画像を選択',
+      'batch-status-progress': '圧縮中（{i}/{total}）：{name}',
+      'batch-status-done': '一括圧縮完了！{n}枚処理しました。',
+      'batch-download': 'ダウンロード',
+      'batch-saved': '削減',
+
+      'ct-hero-title-100': '100KBに圧縮',
+      'ct-hero-title-200': '200KBに圧縮',
+      'ct-hero-title-500': '500KBに圧縮',
+      'ct-hero-desc-100': 'JPG・PNG・WEBP画像をアップロードし、約100KBに自動圧縮。',
+      'ct-hero-desc-200': 'JPG・PNG・WEBP画像をアップロードし、約200KBに自動圧縮。',
+      'ct-hero-desc-500': 'JPG・PNG・WEBP画像をアップロードし、約500KBに自動圧縮。',
+      'ct-faq-title': 'よくある質問',
+      'ct-faq-100': 'アバターや申請写真に最適。画像が大きい場合は最大幅を小さくしてください。',
+      'ct-faq-200': '証明写真や書類のアップロードに最適。200KBは多くのシステムの制限サイズです。',
+      'ct-faq-500': '画質とサイズのバランスが必要な写真に最適。',
+    },
+
+    'ko': {
+      'brand': '파일 라이트 툴',
+      'nav-home': '홈',
+      'nav-tools': '모든 도구',
+      'nav-compress': '압축',
+      'nav-start': '시작하기',
+      'nav-faq': '자주 묻는 질문',
+      'nav-sizes': '빠른 크기',
+
+      'footer': '파일 라이트 툴 · 무료 온라인 도구 · 참고용 결과',
+
+      'more-tools': '더 많은 온라인 도구',
+      'more-tools-desc': '무료로 이미지와 파일을 온라인 처리하세요. 설치가 필요 없습니다.',
+      'card-compress': '이미지 압축',
+      'card-compress-desc': 'JPG/PNG/WEBP를 지정 KB로 압축합니다.',
+      'card-pdf': '이미지를 PDF로',
+      'card-pdf-desc': '이미지를 클릭 한 번으로 PDF로 변환합니다.',
+      'card-format': '형식 변환',
+      'card-format-desc': 'JPG/PNG/WEBP 간 변환합니다.',
+      'card-batch': '일괄 압축',
+      'card-batch-desc': '여러 이미지를 한 번에 압축합니다.',
+
+      'index-hero-title': '무료 온라인 이미지 압축 도구',
+      'index-hero-desc': '이미지를 업로드하고 대상 크기(KB)를 설정하면 브라우저에서 로컬 압축이 완료됩니다. JPG, PNG, WEBP를 지원합니다. 이미지가 PC를 떠나지 않습니다.',
+      'dropzone-label': '이미지 선택',
+      'dropzone-hint': 'JPG, PNG, WEBP 지원. 모든 처리는 브라우저에서 로컬로 이루어집니다.',
+      'label-target': '대상 크기 (KB)',
+      'label-width': '최대 너비 (px)',
+      'label-format': '출력 형식',
+      'select-jpg': 'JPG',
+      'select-webp': 'WEBP',
+      'select-png': 'PNG (무손실)',
+      'button-compress': '압축 시작',
+      'status-select': '먼저 이미지를 선택하세요.',
+
+      'index-faq-q1': '이미지가 서버로 전송되나요?',
+      'index-faq-a1': '아니요. 모든 처리는 브라우저에서 로컬로 이루어집니다. 이미지가 외부로 전송되지 않습니다.',
+      'index-faq-q2': '대상 크기까지 압축되지 않는 이유는?',
+      'index-faq-a2': '이미지가 너무 크면 최대 너비를 줄이거나 WEBP 형식을 시도해보세요.',
+      'index-faq-q3': '어떤 형식을 지원하나요?',
+      'index-faq-a3': '입력은 JPG, PNG, WEBP를 지원합니다. 출력은 JPG, WEBP, PNG 중 선택 가능합니다.',
+      'index-faq-q4': '압축하면 화질이 떨어지나요?',
+      'index-faq-a4': '약간 떨어질 수 있지만, 도구가 화질과 크기 간의 균형을 자동으로 조정합니다. 화질이 중요하다면 PNG 출력을 권장합니다.',
+      'index-faq-q5': '온라인 도구를 사용하는 이유는?',
+      'index-faq-a5': '소프트웨어 설치가 필요 없습니다. 브라우저만 열면 바로 사용할 수 있습니다.',
+
+      'sizes-title': '빠른 압축 크기',
+      'sizes-desc': '대상 크기를 선택하여 해당 도구 페이지로 바로 이동하세요.',
+      'size-100': '100KB로 압축',
+      'size-100-desc': '아바타, 지원 사진에 적합.',
+      'size-200': '200KB로 압축',
+      'size-200-desc': '증명 사진, 문서 업로드에 적합.',
+      'size-500': '500KB로 압축',
+      'size-500-desc': '고화질 사진 업로드에 적합.',
+
+      'pdf-hero-title': '이미지를 PDF로 변환',
+      'pdf-hero-desc': 'JPG, PNG, WEBP 이미지를 업로드하여 PDF로 변환하세요. 여러 이미지를 하나의 PDF로 병합할 수 있습니다. 용지 크기, 방향, 여백을 사용자 지정할 수 있습니다.',
+      'pdf-dropzone-label': '이미지 선택 (다중 선택 가능)',
+      'pdf-dropzone-hint': 'JPG, PNG, WEBP 지원. Ctrl/Cmd 키로 다중 선택하세요.',
+      'pdf-label-size': '용지 크기',
+      'pdf-label-orient': '방향',
+      'pdf-label-margin': '여백 (mm)',
+      'pdf-opt-a4': 'A4 (210×297mm)',
+      'pdf-opt-letter': '레터 (216×279mm)',
+      'pdf-opt-a3': 'A3 (297×420mm)',
+      'pdf-opt-portrait': '세로',
+      'pdf-opt-landscape': '가로',
+      'pdf-button': 'PDF 생성',
+      'pdf-no-image': '최소 한 장의 이미지를 선택하세요.',
+      'pdf-status-loading': '{n}장의 이미지 선택됨, 로딩 중...',
+      'pdf-status-ready': '준비 완료. {n}장의 이미지가 로드되었습니다.',
+      'pdf-status-generating': 'PDF 생성 중...',
+      'pdf-status-done': 'PDF 생성이 완료되었습니다!',
+
+      'format-hero-title': '이미지 형식 변환',
+      'format-hero-desc': 'JPG, PNG, WEBP 형식 간 이미지 변환. 출력 품질과 최대 크기를 사용자 지정할 수 있습니다.',
+      'format-dropzone-label': '이미지 선택',
+      'format-dropzone-hint': 'JPG, PNG, WEBP 지원.',
+      'format-label-output': '출력 형식',
+      'format-label-width': '최대 너비 (px)',
+      'format-label-height': '최대 높이 (px)',
+      'format-label-quality': '출력 품질',
+      'format-opt-jpg': 'JPG',
+      'format-opt-png': 'PNG (무손실)',
+      'format-opt-webp': 'WEBP (경량)',
+      'format-button': '변환 시작',
+      'format-no-image': '이미지를 먼저 선택하세요.',
+      'format-status-converting': '변환 중...',
+      'format-status-done': '변환 완료!',
+
+      'batch-hero-title': '일괄 이미지 압축',
+      'batch-hero-desc': '여러 이미지를 한 번에 업로드하고 일괄 압축합니다. JPG, PNG, WEBP 지원. 모든 처리는 브라우저에서 로컬로 이루어집니다.',
+      'batch-dropzone-label': '여러 이미지 선택',
+      'batch-dropzone-hint': 'JPG, PNG, WEBP 지원. Ctrl/Cmd로 다중 선택하세요.',
+      'batch-label-target': '대상 크기 (KB)',
+      'batch-label-width': '최대 너비 (px)',
+      'batch-label-format': '출력 형식',
+      'batch-button': '일괄 압축 시작',
+      'batch-no-image': '최소 한 장의 이미지를 선택하세요.',
+      'batch-selected': '{n}장의 이미지 선택됨',
+      'batch-status-progress': '압축 중 ({i}/{total}): {name}',
+      'batch-status-done': '일괄 압축 완료! {n}장 처리됨.',
+      'batch-download': '다운로드',
+      'batch-saved': '절약',
+
+      'ct-hero-title-100': '100KB로 압축',
+      'ct-hero-title-200': '200KB로 압축',
+      'ct-hero-title-500': '500KB로 압축',
+      'ct-hero-desc-100': 'JPG, PNG, WEBP 이미지를 업로드하고 약 100KB로 자동 압축합니다.',
+      'ct-hero-desc-200': 'JPG, PNG, WEBP 이미지를 업로드하고 약 200KB로 자동 압축합니다.',
+      'ct-hero-desc-500': 'JPG, PNG, WEBP 이미지를 업로드하고 약 500KB로 자동 압축합니다.',
+      'ct-faq-title': '자주 묻는 질문',
+      'ct-faq-100': '아바타나 지원 사진에 적합합니다. 이미지가 크면 최대 너비를 줄이세요.',
+      'ct-faq-200': '증명 사진이나 문서 업로드에 적합합니다. 200KB는 많은 시스템의 제한 크기입니다.',
+      'ct-faq-500': '화질과 크기 간 균형이 필요한 사진에 적합합니다.',
+    },
+
+    'es': {
+      'brand': 'Herramientas de Archivos',
+      'nav-home': 'Inicio',
+      'nav-tools': 'Todas las Herramientas',
+      'nav-compress': 'Comprimir',
+      'nav-start': 'Comenzar',
+      'nav-faq': 'Preguntas',
+      'nav-sizes': 'Tamaños Rápidos',
+
+      'footer': 'Herramientas de Archivos · Herramientas Gratuitas · Resultados de referencia',
+
+      'more-tools': 'Más Herramientas',
+      'more-tools-desc': 'Procesa imágenes y archivos gratis online. Sin instalación.',
+      'card-compress': 'Compresor de Imágenes',
+      'card-compress-desc': 'Comprime JPG/PNG/WEBP a un tamaño específico.',
+      'card-pdf': 'Imagen a PDF',
+      'card-pdf-desc': 'Convierte imágenes a PDF con un clic.',
+      'card-format': 'Convertir Formato',
+      'card-format-desc': 'Convierte entre JPG/PNG/WEBP.',
+      'card-batch': 'Compresión por Lotes',
+      'card-batch-desc': 'Comprime varias imágenes a la vez.',
+
+      'index-hero-title': 'Compresor de Imágenes Gratuito Online',
+      'index-hero-desc': 'Sube una imagen, establece el tamaño objetivo (KB) y comprime localmente en tu navegador. Compatible con JPG, PNG, WEBP. Tus imágenes nunca salen de tu ordenador.',
+      'dropzone-label': 'Seleccionar Imagen',
+      'dropzone-hint': 'Compatible con JPG, PNG, WEBP. Todo el procesamiento se realiza localmente en tu navegador.',
+      'label-target': 'Tamaño Objetivo (KB)',
+      'label-width': 'Ancho Máx. (px)',
+      'label-format': 'Formato de Salida',
+      'select-jpg': 'JPG',
+      'select-webp': 'WEBP',
+      'select-png': 'PNG (Sin Pérdida)',
+      'button-compress': 'Comprimir',
+      'status-select': 'Selecciona una imagen primero.',
+
+      'index-faq-q1': '¿Las imágenes se suben a un servidor?',
+      'index-faq-a1': 'No. Todo el procesamiento ocurre localmente en tu navegador. Tus imágenes nunca salen de tu ordenador.',
+      'index-faq-q2': '¿Por qué no se alcanza el tamaño objetivo?',
+      'index-faq-a2': 'Si la imagen es demasiado grande, reduce el ancho máximo o prueba el formato WEBP.',
+      'index-faq-q3': '¿Qué formatos están soportados?',
+      'index-faq-a3': 'Entrada compatible con JPG, PNG, WEBP. La salida puede ser JPG, WEBP o PNG.',
+      'index-faq-q4': '¿Se reduce la calidad al comprimir?',
+      'index-faq-a4': 'Ligeramente, pero la herramienta equilibra automáticamente calidad y tamaño. Para máxima calidad, usa salida PNG.',
+      'index-faq-q5': '¿Por qué usar una herramienta online?',
+      'index-faq-a5': 'No necesitas instalar ningún software. Solo abre el navegador y úsalo.',
+
+      'sizes-title': 'Tamaños Rápidos',
+      'sizes-desc': 'Selecciona un tamaño objetivo para ir directamente a esa herramienta.',
+      'size-100': 'Comprimir a 100KB',
+      'size-100-desc': 'Para avatares, fotos de solicitud.',
+      'size-200': 'Comprimir a 200KB',
+      'size-200-desc': 'Para fotos de identificación, documentos.',
+      'size-500': 'Comprimir a 500KB',
+      'size-500-desc': 'Para fotos de alta calidad.',
+
+      'pdf-hero-title': 'Imagen a PDF',
+      'pdf-hero-desc': 'Sube imágenes JPG, PNG, WEBP y genera PDFs con un clic. Compatible con fusión de múltiples imágenes en un solo PDF.',
+      'pdf-dropzone-label': 'Seleccionar Imágenes (Múltiple)',
+      'pdf-dropzone-hint': 'Compatible con JPG, PNG, WEBP. Mantén Ctrl/Cmd para seleccionar varias.',
+      'pdf-label-size': 'Tamaño de Página',
+      'pdf-label-orient': 'Orientación',
+      'pdf-label-margin': 'Margen (mm)',
+      'pdf-opt-a4': 'A4 (210×297mm)',
+      'pdf-opt-letter': 'Carta (216×279mm)',
+      'pdf-opt-a3': 'A3 (297×420mm)',
+      'pdf-opt-portrait': 'Vertical',
+      'pdf-opt-landscape': 'Horizontal',
+      'pdf-button': 'Generar PDF',
+      'pdf-no-image': 'Selecciona al menos una imagen.',
+      'pdf-status-loading': '{n} imágenes seleccionadas, cargando...',
+      'pdf-status-ready': 'Listo. {n} imágenes cargadas.',
+      'pdf-status-generating': 'Generando PDF...',
+      'pdf-status-done': '¡PDF generado correctamente!',
+
+      'format-hero-title': 'Convertir Formato de Imagen',
+      'format-hero-desc': 'Convierte imágenes entre formatos JPG, PNG, WEBP. Personaliza la calidad de salida y dimensiones máximas.',
+      'format-dropzone-label': 'Seleccionar Imagen',
+      'format-dropzone-hint': 'Compatible con JPG, PNG, WEBP.',
+      'format-label-output': 'Formato de Salida',
+      'format-label-width': 'Ancho Máx. (px)',
+      'format-label-height': 'Alto Máx. (px)',
+      'format-label-quality': 'Calidad de Salida',
+      'format-opt-jpg': 'JPG',
+      'format-opt-png': 'PNG (Sin Pérdida)',
+      'format-opt-webp': 'WEBP (Más Pequeño)',
+      'format-button': 'Convertir',
+      'format-no-image': 'Selecciona una imagen primero.',
+      'format-status-converting': 'Convirtiendo...',
+      'format-status-done': '¡Conversión completada!',
+
+      'batch-hero-title': 'Compresión por Lotes',
+      'batch-hero-desc': 'Sube varias imágenes y comprímelas todas a la vez. Compatible con JPG, PNG, WEBP. Todo el procesamiento es local.',
+      'batch-dropzone-label': 'Seleccionar Varias Imágenes',
+      'batch-dropzone-hint': 'Compatible con JPG, PNG, WEBP. Mantén Ctrl/Cmd para seleccionar varias.',
+      'batch-label-target': 'Tamaño Objetivo (KB)',
+      'batch-label-width': 'Ancho Máx. (px)',
+      'batch-label-format': 'Formato de Salida',
+      'batch-button': 'Comprimir Todo',
+      'batch-no-image': 'Selecciona al menos una imagen.',
+      'batch-selected': '{n} imágenes seleccionadas',
+      'batch-status-progress': 'Comprimiendo ({i}/{total}): {name}',
+      'batch-status-done': '¡Compresión por lotes completada! {n} imágenes.',
+      'batch-download': 'Descargar',
+      'batch-saved': 'Ahorrado',
+
+      'ct-hero-title-100': 'Comprimir a 100KB',
+      'ct-hero-title-200': 'Comprimir a 200KB',
+      'ct-hero-title-500': 'Comprimir a 500KB',
+      'ct-hero-desc-100': 'Sube imágenes JPG, PNG o WEBP y comprime automáticamente a unos 100KB.',
+      'ct-hero-desc-200': 'Sube imágenes JPG, PNG o WEBP y comprime automáticamente a unos 200KB.',
+      'ct-hero-desc-500': 'Sube imágenes JPG, PNG o WEBP y comprime automáticamente a unos 500KB.',
+      'ct-faq-title': 'Preguntas Frecuentes',
+      'ct-faq-100': 'Ideal para avatares y fotos de solicitud. Si la imagen es grande, reduce el ancho máximo.',
+      'ct-faq-200': 'Ideal para fotos de identificación y documentos. 200KB es un límite común.',
+      'ct-faq-500': 'Ideal para fotos que necesitan equilibrio entre calidad y tamaño.',
+    }
+  };
+
+  function getCurrentLang() {
+    try {
+      return localStorage.getItem(STORAGE_KEY) || DEFAULT_LANG;
+    } catch { return DEFAULT_LANG; }
+  }
+
+  function applyLanguage(lang) {
+    try { localStorage.setItem(STORAGE_KEY, lang); } catch {}
+    document.documentElement.lang = lang;
+
+    // 更新语言选择器
+    const selector = document.getElementById('lang-select');
+    if (selector) selector.value = lang;
+
+    // 遍历所有 data-i18n 元素
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.dataset.i18n;
+      const text = t[lang]?.[key];
+      if (!text) return;
+
+      const tag = el.tagName;
+      if (tag === 'META') {
+        el.content = text;
+      } else if (tag === 'INPUT') {
+        el.placeholder = text;
+      } else if (tag === 'OPTION') {
+        el.textContent = text;
+      } else {
+        // 支持含有 {n} {i} {total} {name} 占位符的文本
+        el.textContent = text;
+      }
+    });
+  }
+
+  // 带参数的翻译（用于动态状态）
+  window.__ = function(key, params = {}) {
+    const lang = getCurrentLang();
+    let text = t[lang]?.[key];
+    if (!text) return key;
+    for (const [k, v] of Object.entries(params)) {
+      text = text.replace(`{${k}}`, v);
+    }
+    return text;
+  };
+
+  // 切换语言
+  window.switchLanguage = function(lang) {
+    applyLanguage(lang);
+  };
+
+  // 自动初始化
+  document.addEventListener('DOMContentLoaded', () => {
+    applyLanguage(getCurrentLang());
+  });
+})();
