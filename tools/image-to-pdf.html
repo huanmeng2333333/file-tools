@@ -189,8 +189,8 @@
             const c = document.createElement('canvas');
             c.width = w; c.height = h;
             c.getContext('2d').drawImage(img, 0, 0, w, h);
-            const dataUrl = c.toDataURL('image/jpeg');
-            pdf.addImage(dataUrl, 'JPEG', (pageWidth - w) / 2, (pageHeight - h) / 2, w, h);
+            // PNG 无损输出，保证清晰度
+            pdf.addImage(c.toDataURL('image/png'), 'PNG', (pageWidth - w) / 2, (pageHeight - h) / 2, w, h);
           }
           const pdfBlob = pdf.output('blob');
           const url = URL.createObjectURL(pdfBlob);
@@ -214,6 +214,8 @@
     </script>
   </body>
 </html>
+
+
 
 
 
