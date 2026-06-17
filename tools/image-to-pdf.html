@@ -172,7 +172,18 @@
         });
       }
 
-      generateBtn.addEventListener('click', async () => {
+            function blobToDataUrl(blobUrl) {
+        return new Promise((resolve, reject) => {
+          fetch(blobUrl).then(r => r.blob()).then(blob => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          }).catch(reject);
+        });
+      }
+
+generateBtn.addEventListener('click', async () => {
         if (loadedImages.length === 0) {
           statusBox.textContent = window.__('pdf-no-image');
           return;
@@ -192,17 +203,17 @@
           for (let i = 0; i < loadedImages.length; i++) {
             if (i > 0) pdf.addPage();
             const { img } = loadedImages[i];
-            // 直接用原图，不经过 canvas 缩放，保持原始清晰度
-            const imgDataUrl = img.src;
-            const imgType = imgDataUrl.match(/data:image\/([^;,]+)/)?.[1] || 'JPEG';
+            // 把 blob URL 转成 base64 dataUrl，不经过 canvas 缩放
+            const dataUrl = await blobToDataUrl(img.src);
+            const imgType = dataUrl.split(',')[0].split('/')[1].split(';')[0] || 'JPEG';
             // 计算图片在 PDF 中的尺寸（保持宽高比，适应页面）
-            const imgW = img.width, imgH = img.height;
+            const imgW = img.naturalWidth, imgH = img.naturalHeight;
             const scaleX = maxW / imgW;
             const scaleY = maxH / imgH;
             const scale = Math.min(scaleX, scaleY, 1);
             const pw = imgW * scale;
             const ph = imgH * scale;
-            pdf.addImage(imgDataUrl, imgType.toUpperCase(), (pageWidth - pw) / 2, (pageHeight - ph) / 2, pw, ph);
+            pdf.addImage(dataUrl, imgType.toUpperCase(), (pageWidth - pw) / 2, (pageHeight - ph) / 2, pw, ph);
           }
           const pdfBlob = pdf.output('blob');
           const url = URL.createObjectURL(pdfBlob);
@@ -226,6 +237,9 @@
     </script>
   </body>
 </html>
+
+
+
 
 
 
