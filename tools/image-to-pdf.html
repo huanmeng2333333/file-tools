@@ -186,7 +186,11 @@
             const { img } = loadedImages[i];
             const ratio = Math.min(maxW / img.width, maxH / img.height, 1);
             const w = img.width * ratio, h = img.height * ratio;
-            pdf.addImage(img, 'JPEG', (pageWidth - w) / 2, (pageHeight - h) / 2, w, h);
+            const c = document.createElement('canvas');
+            c.width = w; c.height = h;
+            c.getContext('2d').drawImage(img, 0, 0, w, h);
+            const dataUrl = c.toDataURL('image/jpeg');
+            pdf.addImage(dataUrl, 'JPEG', (pageWidth - w) / 2, (pageHeight - h) / 2, w, h);
           }
           const pdfBlob = pdf.output('blob');
           const url = URL.createObjectURL(pdfBlob);
@@ -210,5 +214,6 @@
     </script>
   </body>
 </html>
+
 
 
