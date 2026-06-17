@@ -487,3 +487,102 @@ input[type="range"]::-webkit-slider-thumb {
   gap: 10px;
   margin-left: auto;
 }
+
+
+/* ========== 夜间模式 ========== */
+body.dark {
+  --bg: #0f0f0f;
+  --panel: #1a1a1a;
+  --text: #e8e8e8;
+  --muted: #888888;
+  --line: #2a2a2a;
+  --accent: #2dd4a8;
+  --accent-dark: #24b88e;
+  --warn: #d4a017;
+}
+
+body.dark .topbar {
+  background: rgba(26, 26, 26, 0.92);
+}
+body.dark .dropzone {
+  background: #141414;
+  border-color: #333;
+}
+body.dark .visual {
+  background: linear-gradient(135deg, #1a1a1a 0%, #0f1f1a 100%);
+}
+body.dark .visual-row {
+  border-color: #333;
+  background: #1a1a1a;
+}
+body.dark .dropzone {
+  background: #141414;
+}
+body.dark .result-item {
+  background: #141414;
+  border-color: #2a2a2a;
+}
+body.dark .tool-notice {
+  background: #141414;
+  border-color: #2a2a2a;
+}
+
+/* ========== 夜间模式切换按钮 ========== */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+  padding: 0 2px;
+}
+
+.theme-toggle-track {
+  width: 36px;
+  height: 20px;
+  background: var(--line);
+  border-radius: 10px;
+  position: relative;
+  transition: background 0.25s ease;
+  flex-shrink: 0;
+}
+
+.theme-toggle-thumb {
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.25s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.theme-toggle-icon {
+  font-size: 14px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+body.dark .theme-toggle-track {
+  background: var(--accent);
+}
+
+body.dark .theme-toggle-thumb {
+  transform: translateX(16px);
+}
+
+body.dark .theme-toggle-icon .sun {
+  opacity: 1;
+}
+body.dark .theme-toggle-icon .moon {
+  opacity: 0;
+}
+
+.theme-toggle-icon .sun {
+  opacity: 0;
+}
+.theme-toggle-icon .moon {
+  opacity: 1;
+}

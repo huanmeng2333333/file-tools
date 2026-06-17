@@ -6,7 +6,7 @@
     <title data-i18n="batch-hero-title">批量图片压缩｜在线一次压缩多张 JPG/PNG</title>
     <meta name="description" content="免费在线批量图片压缩工具。一次上传多张图片，统一压缩到目标大小。支持 JPG、PNG、WEBP 格式，浏览器本地处理，不上传服务器。">
     <link rel="stylesheet" href="../assets/styles.css">
-    <script src="../assets/i18n.js"></script>
+    <script src="../assets/theme.js"></script><script src="../assets/i18n.js"></script>
   </head>
   <body>
     <header class="topbar">
@@ -18,7 +18,15 @@
           <a href="#faq" data-i18n="nav-faq">常见问题</a>
         </nav>
         <div class="topbar-right">
-          <select id="lang-select" class="lang-select" onchange="switchLanguage(this.value)" aria-label="语言切换">
+                    <div id="theme-toggle" class="theme-toggle" onclick="toggleTheme()" data-theme="light" title="切换夜间模式">
+            <div class="theme-toggle-track">
+              <div class="theme-toggle-thumb"></div>
+            </div>
+            <div class="theme-toggle-icon">
+              <span class="sun">☀</span>
+              <span class="moon">☾</span>
+            </div>
+          </div><select id="lang-select" class="lang-select" onchange="switchLanguage(this.value)" aria-label="语言切换">
             <option value="zh-CN">中</option>
             <option value="en">EN</option>
             <option value="ja">日</option>
@@ -227,3 +235,4 @@
     </script>
   </body>
 </html>
+

@@ -6,7 +6,7 @@
     <title data-i18n="index-hero-title">免费在线图片压缩工具｜JPG/PNG/WEBP 压缩到指定大小</title>
     <meta name="description" content="免费在线图片压缩，支持 JPG、PNG、WEBP 格式。浏览器本地处理，不上传服务器，保护隐私。一键压缩到 100KB、200KB、500KB 等任意大小，适合证件照、报名照片、头像、电商图片等场景。">
     <link rel="stylesheet" href="./assets/styles.css">
-    <script src="./assets/i18n.js"></script>
+    <script src="./assets/theme.js"></script><script src="./assets/i18n.js"></script>
   </head>
   <body>
     <header class="topbar">
@@ -19,7 +19,16 @@
           <a href="./index.html#faq" data-i18n="nav-faq">常见问题</a>
         </nav>
         <div class="topbar-right">
-          <select id="lang-select" class="lang-select" onchange="switchLanguage(this.value)" aria-label="语言切换">
+                    <div id="theme-toggle" class="theme-toggle" onclick="toggleTheme()" data-theme="light" title="切换夜间模式">
+            <div class="theme-toggle-track">
+              <div class="theme-toggle-thumb"></div>
+            </div>
+            <div class="theme-toggle-icon">
+              <span class="sun">☀</span>
+              <span class="moon">☾</span>
+            </div>
+          </div>
+          <select id="lang-select" class="lang-select" onchange="switchLanguage(this.value)" aria-label="语言切换"> onchange="switchLanguage(this.value)" aria-label="语言切换">
             <option value="zh-CN">中</option>
             <option value="en">EN</option>
             <option value="ja">日</option>
@@ -144,3 +153,4 @@
     <script src="./assets/compress.js"></script>
   </body>
 </html>
+
