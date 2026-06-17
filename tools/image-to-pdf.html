@@ -192,13 +192,17 @@
           for (let i = 0; i < loadedImages.length; i++) {
             if (i > 0) pdf.addPage();
             const { img } = loadedImages[i];
-            const ratio = Math.min(maxW / img.width, maxH / img.height, 1);
-            const w = img.width * ratio, h = img.height * ratio;
-            const c = document.createElement('canvas');
-            c.width = w; c.height = h;
-            c.getContext('2d').drawImage(img, 0, 0, w, h);
-            // PNG 无损输出，保证清晰度
-            pdf.addImage(c.toDataURL('image/png'), 'PNG', (pageWidth - w) / 2, (pageHeight - h) / 2, w, h);
+            // 直接用原图，不经过 canvas 缩放，保持原始清晰度
+            const imgDataUrl = img.src;
+            const imgType = imgDataUrl.match(/data:image\/([^;,]+)/)?.[1] || 'JPEG';
+            // 计算图片在 PDF 中的尺寸（保持宽高比，适应页面）
+            const imgW = img.width, imgH = img.height;
+            const scaleX = maxW / imgW;
+            const scaleY = maxH / imgH;
+            const scale = Math.min(scaleX, scaleY, 1);
+            const pw = imgW * scale;
+            const ph = imgH * scale;
+            pdf.addImage(imgDataUrl, imgType.toUpperCase(), (pageWidth - pw) / 2, (pageHeight - ph) / 2, pw, ph);
           }
           const pdfBlob = pdf.output('blob');
           const url = URL.createObjectURL(pdfBlob);
@@ -222,6 +226,7 @@
     </script>
   </body>
 </html>
+
 
 
 

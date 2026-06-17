@@ -13,10 +13,11 @@
     if (toggle) toggle.dataset.theme = theme;
   }
 
-  window.toggleTheme = function() {
+  window.toggleTheme = function() { console.log("toggleTheme called");
     const current = getTheme();
     applyTheme(current === 'dark' ? 'light' : 'dark');
   };
 
   document.addEventListener('DOMContentLoaded', () => applyTheme(getTheme()));
 })();
+

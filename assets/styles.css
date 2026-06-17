@@ -563,6 +563,20 @@ body.dark .tool-notice {
   font-size: 14px;
   line-height: 1;
   flex-shrink: 0;
+  position: relative;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle-icon .sun,
+.theme-toggle-icon .moon {
+  position: absolute;
+  transition: opacity 0.25s ease;
+  font-size: 14px;
+  line-height: 1;
 }
 
 body.dark .theme-toggle-track {
@@ -586,3 +600,4 @@ body.dark .theme-toggle-icon .moon {
 .theme-toggle-icon .moon {
   opacity: 1;
 }
+
