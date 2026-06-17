@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>图片转PDF｜在线免费 JPG/PNG 转 PDF 工具</title>
+    <meta name="description" content="免费在线将图片转换为 PDF。支持 JPG、PNG、WEBP 格式，可多张合并为一个 PDF，支持横竖版和边距设置。浏览器本地处理，不上传服务器。">
+    <link rel="stylesheet" href="../assets/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="../index.html">文件轻工具</a>
+        <nav class="nav" aria-label="主要导航">
+          <a href="../index.html">首页</a>
+          <a href="#tool">开始转换</a>
+          <a href="#faq">常见问题</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="hero">
+        <div>
+          <h1>图片转 PDF</h1>
+          <p>上传 JPG、PNG、WEBP 图片，一键生成 PDF。支持多张图片合并到同一个 PDF，可自定义纸张大小、横竖版和边距。全部在浏览器本地处理，图片不上传服务器。</p>
+        </div>
+        <div class="visual" aria-hidden="true">
+          <div class="visual-stack">
+            <div class="visual-row"><span>支持格式</span><strong>JPG / PNG / WEBP</strong></div>
+            <div class="visual-row"><span>输出</span><strong>PDF（可合并多张）</strong></div>
+            <div class="visual-row"><span>处理方式</span><strong>本地生成</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tool" class="tool-shell" aria-label="图片转PDF工具">
+        <div class="panel">
+          <div class="dropzone">
+            <label>
+              <strong>选择图片（可多选）</strong>
+              <span>支持 JPG、PNG、WEBP，可一次性选择多张图片。</span>
+              <input id="image-files" type="file" accept="image/*" multiple>
+            </label>
+          </div>
+
+          <div id="preview-area" class="tool-notice" hidden></div>
+
+          <div class="controls">
+            <label>纸张大小
+              <select id="page-size">
+                <option value="a4">A4（210×297mm）</option>
+                <option value="letter">Letter（216×279mm）</option>
+                <option value="a3">A3（297×420mm）</option>
+              </select>
+            </label>
+            <label>纸张方向
+              <select id="orientation">
+                <option value="portrait">竖版</option>
+                <option value="landscape">横版</option>
+              </select>
+            </label>
+            <label>边距（mm）
+              <input id="margin" type="number" min="5" max="40" value="15">
+            </label>
+          </div>
+
+          <p id="status" class="status" role="status"></p>
+          <button id="generate-btn" type="button">生成 PDF</button>
+        </div>
+
+        <aside id="result" class="result" hidden aria-live="polite"></aside>
+      </section>
+
+      <section id="faq" class="section">
+        <h2>图片转 PDF 常见问题</h2>
+        <p><strong>图片会传到服务器吗？</strong> 不会。所有转换操作都在你的浏览器本地完成，图片不会上传到任何服务器。</p>
+        <p><strong>可以一次转多张图片吗？</strong> 可以。选择图片时按住 Ctrl 或 Cmd 多选，所有图片会依次合并到同一个 PDF 文件中。</p>
+        <p><strong>PDF 里的图片清晰度怎么样？</strong> 工具会尽量保持原图清晰度。如果原图很大，PDF 文件也会相应变大。</p>
+        <p><strong>支持把 PDF 转回图片吗？</strong> 这个工具只做图片转 PDF，暂不支持反向操作。</p>
+      </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+    <script>
+      const fileInput = document.querySelector('#image-files');
+      const pageSizeInput = document.querySelector('#page-size');
+      const orientationInput = document.querySelector('#orientation');
+      const marginInput = document.querySelector('#margin');
+      const generateBtn = document.querySelector('#generate-btn');
+      const statusBox = document.querySelector('#status');
+      const resultBox = document.querySelector('#result');
+      const previewArea = document.querySelector('#preview-area');
+
+      let loadedImages = [];
+
+      fileInput.addEventListener('change', () => {
+        const files = Array.from(fileInput.files || []);
+        if (files.length === 0) {
+          loadedImages = [];
+          previewArea.hidden = true;
+          return;
+        }
+
+        statusBox.textContent = `已选择 ${files.length} 张图片，正在加载...`;
+        loadedImages = [];
+
+        Promise.all(files.map(loadImage)).then(images => {
+          loadedImages = images;
+          previewArea.hidden = false;
+          previewArea.textContent = `已加载 ${images.length} 张图片（${images.map(img => img.name).join('、')}）`;
+          statusBox.textContent = `已就绪，共 ${images.length} 张图片。`;
+        });
+      });
+
+      function loadImage(file) {
+        return new Promise((resolve, reject) => {
+          const url = URL.createObjectURL(file);
+          const img = new Image();
+          img.onload = () => {
+            URL.revokeObjectURL(url);
+            resolve({ img, name: file.name.replace(/\.[^.]+$/, '') });
+          };
+          img.onerror = () => reject(new Error('图片读取失败'));
+          img.src = url;
+        });
+      }
+
+      generateBtn.addEventListener('click', async () => {
+        if (loadedImages.length === 0) {
+          statusBox.textContent = '请先选择至少一张图片。';
+          return;
+        }
+
+        generateBtn.disabled = true;
+        statusBox.textContent = '正在生成 PDF...';
+
+        try {
+          const { jsPDF } = window.jspdf;
+          const format = pageSizeInput.value;
+          const orientation = orientationInput.value;
+          const margin = Number(marginInput.value);
+          const pdf = new jsPDF({ orientation, format, unit: 'mm' });
+
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          const maxW = pageWidth - margin * 2;
+          const maxH = pageHeight - margin * 2;
+
+          for (let i = 0; i < loadedImages.length; i++) {
+            if (i > 0) pdf.addPage();
+            const { img } = loadedImages[i];
+            const ratio = Math.min(maxW / img.width, maxH / img.height, 1);
+            const w = img.width * ratio;
+            const h = img.height * ratio;
+            const x = (pageWidth - w) / 2;
+            const y = (pageHeight - h) / 2;
+            pdf.addImage(img, 'JPEG', x, y, w, h);
+          }
+
+          const pdfBlob = pdf.output('blob');
+          const url = URL.createObjectURL(pdfBlob);
+
+          resultBox.hidden = false;
+          resultBox.innerHTML = `
+            <div class="metric"><span>图片数</span><strong>${loadedImages.length} 张</strong></div>
+            <div class="metric"><span>纸张</span><strong>${format.toUpperCase()} · ${orientation === 'portrait' ? '竖版' : '横版'}</strong></div>
+            <div class="metric"><span>PDF 大小</span><strong>${formatSize(pdfBlob.size)}</strong></div>
+            <a class="download" href="${url}" download="images.pdf">下载 PDF</a>
+          `;
+
+          statusBox.textContent = 'PDF 生成完成！';
+        } catch (error) {
+          statusBox.textContent = '生成失败：' + (error.message || '请重试');
+        } finally {
+          generateBtn.disabled = false;
+        }
+      });
+
+      function formatSize(bytes) {
+        if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + 'KB';
+        return (bytes / 1024 / 1024).toFixed(2) + 'MB';
+      }
+    </script>
+  </body>
+</html>

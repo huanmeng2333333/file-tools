@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>图片压缩到指定大小｜免费在线压缩 JPG/PNG 到 100KB、200KB</title>
-    <meta name="description" content="上传图片，输入目标大小，在线压缩 JPG、PNG、WEBP 到指定 KB。适合报名、头像、证件照、表单上传等场景。">
+    <title>免费在线图片压缩工具｜JPG/PNG/WEBP 压缩到指定大小</title>
+    <meta name="description" content="免费在线图片压缩，支持 JPG、PNG、WEBP 格式。浏览器本地处理，不上传服务器，保护隐私。一键压缩到 100KB、200KB、500KB 等任意大小，适合证件照、报名照片、头像、电商图片等场景。">
     <link rel="stylesheet" href="./assets/styles.css">
   </head>
   <body>
@@ -12,9 +12,10 @@
       <div class="topbar-inner">
         <div class="brand">文件轻工具</div>
         <nav class="nav" aria-label="主要导航">
-          <a href="#tool">图片压缩</a>
-          <a href="#longtail">常用尺寸</a>
-          <a href="#faq">常见问题</a>
+          <a href="./index.html#tool">图片压缩</a>
+          <a href="./index.html#tools">全部工具</a>
+          <a href="./index.html#longtail">常用尺寸</a>
+          <a href="./index.html#faq">常见问题</a>
         </nav>
       </div>
     </header>
@@ -22,8 +23,8 @@
     <main class="page">
       <section class="hero">
         <div>
-          <h1>图片压缩到指定大小</h1>
-          <p>上传图片，输入目标 KB，浏览器本地完成压缩。适合证件照、考试报名、头像上传、表单附件和网站图片。</p>
+          <h1>免费在线图片压缩工具</h1>
+          <p>上传图片，输入目标大小（KB），浏览器本地完成压缩。支持 JPG、PNG、WEBP 格式，图片不会离开你的电脑，安全又快捷。适合证件照、考试报名、头像上传、电商图片、社交媒体配图等场景。</p>
         </div>
         <div class="visual" aria-hidden="true">
           <div class="visual-stack">
@@ -46,11 +47,11 @@
 
           <div class="controls">
             <label>
-              目标大小
+              目标大小（KB）
               <input id="target-kb" type="number" min="10" max="5000" value="200">
             </label>
             <label>
-              最大宽度
+              最大宽度（px）
               <input id="max-width" type="number" min="200" max="4000" value="1600">
             </label>
             <label>
@@ -58,6 +59,7 @@
               <select id="format">
                 <option value="image/jpeg">JPG</option>
                 <option value="image/webp">WEBP</option>
+                <option value="image/png">PNG（无损）</option>
               </select>
             </label>
           </div>
@@ -69,8 +71,36 @@
         <aside id="result" class="result" hidden aria-live="polite"></aside>
       </section>
 
+      <section id="tools" class="section">
+        <h2>更多在线文件工具</h2>
+        <p>免费在线处理图片和文件，无需安装任何软件，全部在浏览器本地完成。</p>
+        <div class="tool-grid">
+          <a class="tool-card" href="./index.html">
+            <div class="icon">📉</div>
+            <strong>图片压缩</strong>
+            <span>压缩 JPG/PNG/WEBP 到指定 KB，适合各类上传场景。</span>
+          </a>
+          <a class="tool-card" href="./tools/image-to-pdf.html">
+            <div class="icon">📄</div>
+            <strong>图片转 PDF</strong>
+            <span>上传图片一键生成 PDF，支持多张合并、横竖版设置。</span>
+          </a>
+          <a class="tool-card" href="./tools/format-converter.html">
+            <div class="icon">🔄</div>
+            <strong>图片格式转换</strong>
+            <span>JPG、PNG、WEBP 互转，自定义质量和尺寸。</span>
+          </a>
+          <a class="tool-card" href="./tools/batch-compress.html">
+            <div class="icon">📦</div>
+            <strong>批量压缩</strong>
+            <span>一次上传多张图片，统一压缩到目标大小。</span>
+          </a>
+        </div>
+      </section>
+
       <section id="longtail" class="section">
         <h2>常用压缩入口</h2>
+        <p>直接选择目标大小，快速进入对应工具页。</p>
         <div class="longtail-grid">
           <a class="longtail-card" href="./tools/compress-image-to-100kb.html">
             <strong>图片压缩到 100KB</strong>
@@ -89,14 +119,16 @@
 
       <section id="faq" class="section">
         <h2>常见问题</h2>
-        <p><strong>图片会上传到服务器吗？</strong> 不会。这个版本使用浏览器本地压缩，图片不会离开你的电脑。</p>
-        <p><strong>为什么压不到目标大小？</strong> 图片尺寸太大时，单靠降低质量不一定够。可以把最大宽度调低再试。</p>
-        <p><strong>为什么推荐做这种工具页？</strong> 因为用户搜索这类词时通常已经有明确任务，点击和停留都比泛泛文章更好。</p>
+        <p><strong>图片会上传到服务器吗？</strong> 不会。所有处理都在你的浏览器本地完成，图片不会离开你的电脑，完全保护隐私。</p>
+        <p><strong>为什么压不到目标大小？</strong> 图片尺寸过大时单靠降低质量不一定够用。可以降低「最大宽度」再试试，或者换用 WEBP 格式（相同质量下体积更小）。</p>
+        <p><strong>支持哪些图片格式？</strong> 支持 JPG、PNG、WEBP。输出可选 JPG（通用）、WEBP（体积小）、PNG（无损）。</p>
+        <p><strong>压缩后会损失画质吗？</strong> 会有一点，但工具会自动平衡画质和体积。如果对画质要求高，建议选择 PNG 无损输出，或把目标大小设高一些。</p>
+        <p><strong>为什么推荐用在线工具？</strong> 因为不需要安装任何软件，打开浏览器就能用。对于偶尔需要处理图片的用户来说，比下载 Photoshop 等大软件方便得多。</p>
       </section>
     </main>
 
     <footer class="footer">
-      <div class="page">文件轻工具 · 免费在线图片压缩 · 结果仅供参考</div>
+      <div class="page">文件轻工具 · 免费在线图片压缩 · 图片转PDF · 格式转换 · 批量压缩 · 结果仅供参考</div>
     </footer>
 
     <script src="./assets/compress.js"></script>

@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>图片格式转换｜在线免费 JPG/PNG/WEBP 互转</title>
+    <meta name="description" content="免费在线图片格式转换工具。支持 JPG、PNG、WEBP 互相转换，可自定义输出质量和尺寸。浏览器本地处理，不上传服务器。">
+    <link rel="stylesheet" href="../assets/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="../index.html">文件轻工具</a>
+        <nav class="nav" aria-label="主要导航">
+          <a href="../index.html">首页</a>
+          <a href="#tool">开始转换</a>
+          <a href="#faq">常见问题</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="hero">
+        <div>
+          <h1>图片格式转换</h1>
+          <p>在线将图片转换为 JPG、PNG、WEBP 格式。支持自定义输出质量（0-100%）和最大尺寸。适合需要统一图片格式、缩小体积或适配不同平台要求的场景。</p>
+        </div>
+        <div class="visual" aria-hidden="true">
+          <div class="visual-stack">
+            <div class="visual-row"><span>输入</span><strong>JPG / PNG / WEBP</strong></div>
+            <div class="visual-row"><span>输出</span><strong>JPG / PNG / WEBP 任选</strong></div>
+            <div class="visual-row"><span>处理方式</span><strong>本地转换</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tool" class="tool-shell" aria-label="图片格式转换工具">
+        <div class="panel">
+          <div class="dropzone">
+            <label>
+              <strong>选择图片</strong>
+              <span>支持 JPG、PNG、WEBP 格式。</span>
+              <input id="image-file" type="file" accept="image/*">
+            </label>
+          </div>
+
+          <div class="controls">
+            <label>输出格式
+              <select id="target-format">
+                <option value="image/jpeg">JPG（通用）</option>
+                <option value="image/png">PNG（无损）</option>
+                <option value="image/webp">WEBP（体积小）</option>
+              </select>
+            </label>
+            <label>最大宽度（px）
+              <input id="max-width" type="number" min="200" max="8000" value="0">
+            </label>
+            <label>最大高度（px）
+              <input id="max-height" type="number" min="200" max="8000" value="0">
+            </label>
+          </div>
+
+          <div class="slider-label">
+            <span>输出质量</span>
+            <span class="value" id="quality-value">90%</span>
+          </div>
+          <input type="range" id="quality" min="10" max="100" value="90" step="5">
+
+          <p id="status" class="status" role="status"></p>
+          <button id="convert-btn" type="button">开始转换</button>
+        </div>
+
+        <aside id="result" class="result" hidden aria-live="polite"></aside>
+      </section>
+
+      <section id="faq" class="section">
+        <h2>格式转换常见问题</h2>
+        <p><strong>图片会传到服务器吗？</strong> 不会。所有转换都在你的浏览器本地完成，图片不上传。</p>
+        <p><strong>JPG、PNG、WEBP 有什么区别？</strong> JPG 通用性最好，适合照片。PNG 支持透明背景，无损压缩。WEBP 在同等画质下体积最小，但部分老旧软件不支持。</p>
+        <p><strong>质量设多少合适？</strong> 照片建议 80-90%，在画质和体积之间取得平衡。100% 画质最好但文件大，适合需要保留细节的场景。</p>
+        <p><strong>宽度和高度填 0 是什么意思？</strong> 填 0 表示不限制，保持原图尺寸。只填宽度不填高度，会按比例缩放。</p>
+      </section>
+    </main>
+
+    <script>
+      const fileInput = document.querySelector('#image-file');
+      const formatInput = document.querySelector('#target-format');
+      const maxWidthInput = document.querySelector('#max-width');
+      const maxHeightInput = document.querySelector('#max-height');
+      const qualityInput = document.querySelector('#quality');
+      const qualityValue = document.querySelector('#quality-value');
+      const convertBtn = document.querySelector('#convert-btn');
+      const statusBox = document.querySelector('#status');
+      const resultBox = document.querySelector('#result');
+
+      let selectedFile = null;
+      let loadedImage = null;
+
+      qualityInput.addEventListener('input', () => {
+        qualityValue.textContent = qualityInput.value + '%';
+      });
+
+      fileInput.addEventListener('change', () => {
+        selectedFile = fileInput.files?.[0] || null;
+        loadedImage = null;
+        resultBox.hidden = true;
+        if (selectedFile) {
+          statusBox.textContent = '已选择：' + selectedFile.name;
+          const url = URL.createObjectURL(selectedFile);
+          const img = new Image();
+          img.onload = () => {
+            loadedImage = img;
+            URL.revokeObjectURL(url);
+          };
+          img.src = url;
+        }
+      });
+
+      convertBtn.addEventListener('click', async () => {
+        if (!selectedFile || !loadedImage) {
+          statusBox.textContent = '请先选择一张图片。';
+          return;
+        }
+
+        convertBtn.disabled = true;
+        statusBox.textContent = '正在转换...';
+
+        try {
+          const format = formatInput.value;
+          const quality = Number(qualityInput.value) / 100;
+          let maxW = Number(maxWidthInput.value) || Infinity;
+          let maxH = Number(maxHeightInput.value) || Infinity;
+
+          let w = loadedImage.naturalWidth;
+          let h = loadedImage.naturalHeight;
+
+          if (maxW < w || maxH < h) {
+            const ratio = Math.min(maxW / w, maxH / h, 1);
+            w = Math.round(w * ratio);
+            h = Math.round(h * ratio);
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+
+          if (format === 'image/jpeg') {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, w, h);
+          }
+          ctx.drawImage(loadedImage, 0, 0, w, h);
+
+          const blob = await new Promise(resolve => {
+            canvas.toBlob(resolve, format, quality);
+          });
+
+          const url = URL.createObjectURL(blob);
+          const ext = format === 'image/jpeg' ? 'jpg' : format === 'image/png' ? 'png' : 'webp';
+          const name = selectedFile.name.replace(/\.[^.]+$/, '') || 'converted';
+
+          resultBox.hidden = false;
+          resultBox.innerHTML = `
+            <img src="${url}" alt="转换后的图片预览">
+            <div class="metric"><span>原图大小</span><strong>${formatSize(selectedFile.size)}</strong></div>
+            <div class="metric"><span>转换后</span><strong>${formatSize(blob.size)}</strong></div>
+            <div class="metric"><span>格式</span><strong>${ext.toUpperCase()}</strong></div>
+            <div class="metric"><span>尺寸</span><strong>${w} × ${h}</strong></div>
+            <div class="metric"><span>节省</span><strong>${selectedFile.size > 0 ? Math.round((1 - blob.size / selectedFile.size) * 100) : 0}%</strong></div>
+            <a class="download" href="${url}" download="${name}.${ext}">下载转换后的图片</a>
+          `;
+
+          statusBox.textContent = '转换完成！';
+        } catch (error) {
+          statusBox.textContent = '转换失败：' + (error.message || '请重试');
+        } finally {
+          convertBtn.disabled = false;
+        }
+      });
+
+      function formatSize(bytes) {
+        if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + 'KB';
+        return (bytes / 1024 / 1024).toFixed(2) + 'MB';
+      }
+    </script>
+  </body>
+</html>

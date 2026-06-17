@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>批量图片压缩｜在线一次压缩多张 JPG/PNG</title>
+    <meta name="description" content="免费在线批量图片压缩工具。一次上传多张图片，统一压缩到目标大小。支持 JPG、PNG、WEBP 格式，浏览器本地处理，不上传服务器。">
+    <link rel="stylesheet" href="../assets/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="../index.html">文件轻工具</a>
+        <nav class="nav" aria-label="主要导航">
+          <a href="../index.html">首页</a>
+          <a href="#tool">开始压缩</a>
+          <a href="#faq">常见问题</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="hero">
+        <div>
+          <h1>批量图片压缩</h1>
+          <p>一次上传多张图片，统一压缩到目标大小。支持 JPG、PNG、WEBP 格式，全部在浏览器本地处理。适合多张证件照、商品图片、相册照片等批量处理场景。</p>
+        </div>
+        <div class="visual" aria-hidden="true">
+          <div class="visual-stack">
+            <div class="visual-row"><span>上传</span><strong>多张图片同时处理</strong></div>
+            <div class="visual-row"><span>输出</span><strong>逐个下载</strong></div>
+            <div class="visual-row"><span>处理方式</span><strong>本地批量压缩</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tool" class="tool-shell" aria-label="批量压缩工具">
+        <div class="panel">
+          <div class="dropzone">
+            <label>
+              <strong>选择多张图片</strong>
+              <span>支持 JPG、PNG、WEBP，按住 Ctrl 或 Cmd 多选。</span>
+              <input id="image-files" type="file" accept="image/*" multiple>
+            </label>
+          </div>
+
+          <div id="file-count" class="tool-notice" hidden></div>
+
+          <div class="controls">
+            <label>目标大小（KB）
+              <input id="target-kb" type="number" min="10" max="5000" value="200">
+            </label>
+            <label>最大宽度（px）
+              <input id="max-width" type="number" min="200" max="4000" value="1600">
+            </label>
+            <label>输出格式
+              <select id="format">
+                <option value="image/jpeg">JPG</option>
+                <option value="image/webp">WEBP</option>
+                <option value="image/png">PNG（无损）</option>
+              </select>
+            </label>
+          </div>
+
+          <p id="status" class="status" role="status"></p>
+          <button id="compress-all-btn" type="button">开始批量压缩</button>
+        </div>
+
+        <aside id="results" class="result" hidden aria-live="polite"></aside>
+      </section>
+
+      <section id="faq" class="section">
+        <h2>批量压缩常见问题</h2>
+        <p><strong>一次能压缩多少张？</strong> 没有数量限制，但图片越多压缩时间越长。建议一次不超过 20 张以获得更好体验。</p>
+        <p><strong>图片会在服务器上处理吗？</strong> 不会，所有压缩都在你的浏览器本地完成，不上传任何图片。</p>
+        <p><strong>可以批量下载吗？</strong> 目前支持逐个下载。每个压缩结果都有独立的下载按钮。</p>
+        <p><strong>每张图片都压缩到同样的目标大小？</strong> 是的，所有图片使用相同的目标大小、最大宽度和输出格式设置。</p>
+      </section>
+    </main>
+
+    <script>
+      const fileInput = document.querySelector('#image-files');
+      const targetInput = document.querySelector('#target-kb');
+      const maxWidthInput = document.querySelector('#max-width');
+      const formatInput = document.querySelector('#format');
+      const compressBtn = document.querySelector('#compress-all-btn');
+      const statusBox = document.querySelector('#status');
+      const resultsBox = document.querySelector('#results');
+      const fileCount = document.querySelector('#file-count');
+
+      let imageFiles = [];
+
+      fileInput.addEventListener('change', () => {
+        const files = Array.from(fileInput.files || []);
+        imageFiles = files;
+        if (files.length > 0) {
+          fileCount.hidden = false;
+          fileCount.textContent = `已选择 ${files.length} 张图片`;
+          resultsBox.hidden = true;
+          statusBox.textContent = '';
+        } else {
+          fileCount.hidden = true;
+        }
+      });
+
+      compressBtn.addEventListener('click', async () => {
+        if (imageFiles.length === 0) {
+          statusBox.textContent = '请先选择至少一张图片。';
+          return;
+        }
+
+        compressBtn.disabled = true;
+        statusBox.textContent = '正在批量压缩（0/' + imageFiles.length + '）...';
+
+        try {
+          const targetBytes = Number(targetInput.value) * 1024;
+          const maxWidth = Number(maxWidthInput.value);
+          const mimeType = formatInput.value;
+
+          const results = [];
+
+          for (let i = 0; i < imageFiles.length; i++) {
+            const file = imageFiles[i];
+            statusBox.textContent = `正在压缩（${i + 1}/${imageFiles.length}）：${file.name}`;
+
+            const blob = await compressSingle(file, maxWidth, mimeType, targetBytes);
+            results.push({ file, blob });
+          }
+
+          showBatchResults(results);
+          statusBox.textContent = `批量压缩完成！共 ${results.length} 张。`;
+        } catch (error) {
+          statusBox.textContent = '压缩出错：' + (error.message || '请重试');
+        } finally {
+          compressBtn.disabled = false;
+        }
+      });
+
+      function loadImage(file) {
+        return new Promise((resolve, reject) => {
+          const url = URL.createObjectURL(file);
+          const img = new Image();
+          img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+          img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('读取失败')); };
+          img.src = url;
+        });
+      }
+
+      async function compressSingle(file, maxWidth, mimeType, targetBytes) {
+        const img = await loadImage(file);
+        const ratio = Math.min(1, maxWidth / img.naturalWidth);
+        const w = Math.max(1, Math.round(img.naturalWidth * ratio));
+        const h = Math.max(1, Math.round(img.naturalHeight * ratio));
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        if (mimeType === 'image/jpeg') {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, w, h);
+        }
+        ctx.drawImage(img, 0, 0, w, h);
+
+        let low = 0.1, high = 0.95;
+        let best = await blobFromCanvas(canvas, mimeType, high);
+
+        for (let i = 0; i < 8; i++) {
+          const q = (low + high) / 2;
+          const blob = await blobFromCanvas(canvas, mimeType, q);
+          if (blob.size > targetBytes) high = q;
+          else { low = q; best = blob; }
+        }
+
+        if (best.size > targetBytes) {
+          // Try lower max width automatically
+          return await compressSingle(file, Math.round(maxWidth * 0.7), mimeType, targetBytes);
+        }
+        return best;
+      }
+
+      function blobFromCanvas(canvas, mimeType, quality) {
+        return new Promise(resolve => {
+          canvas.toBlob(resolve, mimeType, quality);
+        });
+      }
+
+      function showBatchResults(results) {
+        resultsBox.hidden = false;
+        let html = '<div class="result-list">';
+        for (const { file, blob } of results) {
+          const url = URL.createObjectURL(blob);
+          const ext = blob.type.includes('webp') ? 'webp' : blob.type.includes('png') ? 'png' : 'jpg';
+          const name = file.name.replace(/\.[^.]+$/, '') || 'compressed';
+          html += `
+            <div class="result-item">
+              <div class="info">
+                <strong>${file.name}</strong>
+                <span class="size">${formatSize(file.size)} → ${formatSize(blob.size)}（节省 ${file.size > 0 ? Math.round((1 - blob.size / file.size) * 100) : 0}%）</span>
+              </div>
+              <a class="download" href="${url}" download="${name}-compressed.${ext}">下载</a>
+            </div>
+          `;
+        }
+        html += '</div>';
+        resultsBox.innerHTML = html;
+      }
+
+      function formatSize(bytes) {
+        if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + 'KB';
+        return (bytes / 1024 / 1024).toFixed(2) + 'MB';
+      }
+    </script>
+  </body>
+</html>
