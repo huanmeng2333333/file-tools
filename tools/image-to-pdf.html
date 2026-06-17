@@ -204,7 +204,7 @@ generateBtn.addEventListener('click', async () => {
             if (i > 0) pdf.addPage();
             const { img } = loadedImages[i];
             // 把 blob URL 转成 base64 dataUrl，不经过 canvas 缩放
-            const dataUrl = await blobToDataUrl(img.src);
+            const dataUrl = await getImageDataUrl(i);
             const imgType = dataUrl.split(',')[0].split('/')[1].split(';')[0] || 'JPEG';
             // 计算图片在 PDF 中的尺寸（保持宽高比，适应页面）
             const imgW = img.naturalWidth, imgH = img.naturalHeight;
@@ -237,6 +237,8 @@ generateBtn.addEventListener('click', async () => {
     </script>
   </body>
 </html>
+
+
 
 
 
