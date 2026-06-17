@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>图片压缩到100KB｜在线压缩 JPG/PNG 到100K以内</title>
+    <meta name="description" content="免费把图片压缩到100KB左右，适合头像、报名照、证件照和小尺寸表单附件。浏览器本地处理，不上传图片。">
+    <link rel="stylesheet" href="../assets/styles.css">
+  </head>
+  <body data-target="100">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="../index.html">文件轻工具</a>
+        <nav class="nav" aria-label="主要导航">
+          <a href="../index.html">首页</a>
+          <a href="#tool">开始压缩</a>
+          <a href="#faq">常见问题</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="hero">
+        <div>
+          <h1>图片压缩到100KB</h1>
+          <p>上传 JPG、PNG 或 WEBP 图片，自动压缩到 100KB 左右。适合头像、报名照和小尺寸附件。</p>
+        </div>
+        <div class="visual" aria-hidden="true">
+          <div class="visual-stack">
+            <div class="visual-row"><span>常用场景</span><strong>头像/报名</strong></div>
+            <div class="visual-row"><span>目标大小</span><strong>100KB</strong></div>
+            <div class="visual-row"><span>处理方式</span><strong>本地压缩</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tool" class="tool-shell" aria-label="图片压缩到100KB工具">
+        <div class="panel">
+          <div class="dropzone">
+            <label>
+              <strong>选择图片</strong>
+              <span>图片只在你的浏览器里处理。</span>
+              <input id="image-file" type="file" accept="image/*">
+            </label>
+          </div>
+          <div class="controls">
+            <label>目标大小<input id="target-kb" type="number" min="10" max="5000" value="100"></label>
+            <label>最大宽度<input id="max-width" type="number" min="200" max="4000" value="1200"></label>
+            <label>输出格式<select id="format"><option value="image/jpeg">JPG</option><option value="image/webp">WEBP</option></select></label>
+          </div>
+          <p id="status" class="status" role="status"></p>
+          <button id="compress-button" type="button">开始压缩</button>
+        </div>
+        <aside id="result" class="result" hidden aria-live="polite"></aside>
+      </section>
+
+      <section id="faq" class="section">
+        <h2>压缩到100KB适合什么图片？</h2>
+        <p>适合头像、报名照片、小尺寸证件照和表单附件。如果照片很大，可以把最大宽度调低。</p>
+      </section>
+    </main>
+    <script src="../assets/compress.js"></script>
+  </body>
+</html>
